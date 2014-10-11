@@ -19,10 +19,47 @@
 # <pep8 compliant>
 
 import bpy
-from bpy.types import Panel
+from bpy.props import *
+from math import *
+from mathutils import *
 
-def register():
-    pass
+from sheepnado.component import *
 
-def unregister():
-    pass
+_bone_prefix = "handle"
+
+class SheepnadoRig(SheepnadoComponent, bpy.types.PropertyGroup):
+    object_type = 'ARMATURE'
+    
+    handles = IntProperty(name="Handles", description="Number of handles",
+                          default=4, min=2, soft_min=2, soft_max=32, options=set(),
+                          update=SheepnadoComponent.component_update)
+    
+    def setup_bones(self, ob, num_points):
+        arm = ob.data
+        
+        while arm.edit_bones:
+            arm.edit_bones.remove(arm.edit_bones[0])
+        
+        dz = -1.0 / (num_points - 1)
+        for i in range(num_points):
+            bone = arm.edit_bones.new(_bone_prefix + str(i))
+            
+            bone.head = Vector((0.0, 0.0, i * dz))
+            bone.tail = bone.head + Vector((0.0, 0.0, 1.0))
+    
+    def draw(self, layout, context):
+        layout.prop(self, "handles")
+
+    def verify(self, ob, context):
+        cur_act = context.scene.objects.active
+        # set the armature as active and go to edit mode to add bones
+        context.scene.objects.active = ob
+        bpy.ops.object.mode_set(mode='EDIT')
+            
+        try:
+            self.setup_bones(ob, self.handles)
+        except Exception:
+            raise
+        finally:
+            bpy.ops.object.mode_set(mode='POSE')
+            context.scene.objects.active = cur_act

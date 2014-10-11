@@ -22,12 +22,13 @@ import bpy
 from bpy.types import PropertyGroup, Group, Operator
 from bpy.props import *
 
-from sheepnado import curve_guide
+from sheepnado import curve_guide, rig
 
 _group_name = "SheepnadoGroup"
 _object_prefix = "Sheepnado."
 _components = {
     ("curve_guide", curve_guide.SheepnadoCurveGuide),
+    ("rig", rig.SheepnadoRig),
 }
 
 def register_component_properties(propgroup):
@@ -98,7 +99,7 @@ def verify_group_objects(context, group, add_missing, cleanup_action):
         if c[2] is None:
             ob = c[1].create_object(_object_prefix + c[0], context)
             if not ob:
-                raise Exception("Could not create component %s" % c[1])
+                raise Exception("Could not create component %s" % c[0])
             
             try:
                 context.scene.objects.link(ob)
@@ -112,7 +113,7 @@ def verify_group_objects(context, group, add_missing, cleanup_action):
     
     # verify objects
     for c in settings.components:
-        c[1].verify(c[2])
+        c[1].verify(c[2], context)
 
 def get_group(context):
     return bpy.data.groups.get(_group_name, None)

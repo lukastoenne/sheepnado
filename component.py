@@ -43,6 +43,8 @@ class SheepnadoComponent():
             data = bpy.data.meshes.new(name)
         elif datatype == 'CURVE':
             data = bpy.data.curves.new(name, type=self.curve_type)
+        elif datatype == 'ARMATURE':
+            data = bpy.data.armatures.new(name)
         else:
             raise Exception("Unsupported object data type %s" % datatype)
             data = None
@@ -64,7 +66,7 @@ class SheepnadoComponent():
         raise Exception("'draw' method not implemented")
     
     # Main object setup here
-    def verify(self, ob):
+    def verify(self, ob, context):
         raise Exception("'verify' method not implemented")
 
     # Update callback for properties to rebuild the object
@@ -73,4 +75,4 @@ class SheepnadoComponent():
         if group:
             name, settings, ob = group.sheepnado.get_component_type(type(self))
             if ob:
-                self.verify(ob)
+                self.verify(ob, context)

@@ -29,16 +29,14 @@ bl_info = {
     "category": "Development"}
 
 import bpy
-from sheepnado import ui, group_utils, rig
+from sheepnado import ui, group_utils
  
 def register():
     ui.register()
-    rig.register()
     group_utils.register()
 
 def unregister():
     ui.unregister()
-    rig.unregister()
     group_utils.unregister()
 
 if __name__ == "__main__":

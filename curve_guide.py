@@ -43,16 +43,16 @@ class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
     def setup_points(self, spline):
         num_points = len(spline.bezier_points)
         num_rev = self.revolutions
-        dz = -1.0 / num_points
-        dphi = 2*pi * num_rev / num_points
+        dz = -1.0 / (num_points - 1)
+        dphi = 2*pi * num_rev / (num_points - 1)
         
         for k, pt in enumerate(spline.bezier_points):
             pt.handle_left_type = 'AUTO'
             pt.handle_right_type = 'AUTO'
             
             pt.co = Vector((sin(dphi*k), cos(dphi*k), dz*k))
-    
-    def verify(self, ob):
+
+    def verify(self, ob, context):
         curve = ob.data
         
         # curve needs to be 3D
