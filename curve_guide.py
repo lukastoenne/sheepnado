@@ -23,33 +23,7 @@ from bpy.props import *
 from math import *
 from mathutils import *
 
-class SheepnadoComponent():
-    def poll_object(self, ob):
-        if ob.type != self.object_type:
-            return False
-        return True
-    
-    def _create_object_data(self, name):
-        datatype = self.object_type
-        if datatype == 'MESH':
-            data = bpy.data.meshes.new(name)
-        elif datatype == 'CURVE':
-            data = bpy.data.curves.new(name, type=self.curve_type)
-        else:
-            raise Exception("Unsupported object data type %s" % datatype)
-            data = None
-        return data
-    
-    def create_object(self, name, context):
-        from bpy_extras import object_utils
-        
-        data = self._create_object_data(name)
-        ob = object_utils.object_data_add(context, data).object
-        # XXX hack: force exact object name by setting it explicitly
-        ob.name = name
-        
-        return ob
-
+from sheepnado.component import *
 
 class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
     object_type = 'CURVE'
