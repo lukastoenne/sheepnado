@@ -55,6 +55,9 @@ class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
     def verify(self, ob):
         curve = ob.data
         
+        # curve needs to be 3D
+        curve.dimensions = '3D'
+        
         num_rev = self.revolutions
         num_points = self.resolution * num_rev
         
