@@ -30,11 +30,13 @@ import bpy
 #
 # 
 class SheepnadoComponent():
+    # Test if main object type is correct
     def poll_object(self, ob):
         if ob.type != self.object_type:
             return False
         return True
     
+    # Create a new object data block
     def _create_object_data(self, name):
         datatype = self.object_type
         if datatype == 'MESH':
@@ -46,6 +48,7 @@ class SheepnadoComponent():
             data = None
         return data
     
+    # Create a new object
     def create_object(self, name, context):
         from bpy_extras import object_utils
         
@@ -56,10 +59,18 @@ class SheepnadoComponent():
         
         return ob
     
-    # add custom property drawing here
+    # Add custom property drawing here
     def draw(self, layout, context):
         raise Exception("'draw' method not implemented")
     
-    # main object setup here
+    # Main object setup here
     def verify(self, ob):
         raise Exception("'verify' method not implemented")
+
+    # Update callback for properties to rebuild the object
+    def component_update(self, context):
+        group = self.id_data
+        if group:
+            name, settings, ob = group.sheepnado.get_component_type(type(self))
+            if ob:
+                self.verify(ob)

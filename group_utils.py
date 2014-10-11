@@ -48,6 +48,13 @@ class SheepnadoGroup(PropertyGroup):
         for c in _components:
             yield c[0], getattr(self, c[0], None), group.objects.get(_object_prefix + c[0])
 
+    def get_component_type(self, comptype):
+        """Look up tuple (name, settings, object) representing a component"""
+        group = self.id_data
+        for c in _components:
+            if c[1] == comptype:
+                return c[0], getattr(self, c[0], None), group.objects.get(_object_prefix + c[0])
+
     def draw(self, layout, context):
         for c in self.components:
             c[1].draw(layout, context)

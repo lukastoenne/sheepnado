@@ -29,8 +29,12 @@ class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
     object_type = 'CURVE'
     curve_type = 'CURVE'
     
-    revolutions = FloatProperty(name="Revolutions", description="Number of revolutions of the curve guide", min=1.0, soft_min=10.0, soft_max=200.0)
-    resolution = IntProperty(name="Resolution", description="Number of points per curve guide revolution", min=1, soft_min=3, soft_max=32, options=set())
+    revolutions = FloatProperty(name="Revolutions", description="Number of revolutions of the curve guide",
+                                default=4, min=1.0, soft_min=1.0, soft_max=200.0,
+                                update=SheepnadoComponent.component_update)
+    resolution = IntProperty(name="Resolution", description="Number of points per curve guide revolution",
+                             default=4, min=1, soft_min=3, soft_max=32, options=set(),
+                             update=SheepnadoComponent.component_update)
     
     def draw(self, layout, context):
         layout.prop(self, "revolutions")
