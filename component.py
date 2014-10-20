@@ -66,13 +66,18 @@ class SheepnadoComponent():
         raise Exception("'draw' method not implemented")
     
     # Main object setup here
-    def verify(self, ob, context):
+    def verify(self, ob, settings, context):
         raise Exception("'verify' method not implemented")
+
+    # Create connections to other components
+    def link(self, ob, settings):
+        pass
 
     # Update callback for properties to rebuild the object
     def component_update(self, context):
         group = self.id_data
         if group:
-            name, settings, ob = group.sheepnado.get_component_type(type(self))
+            settings = group.sheepnado
+            name, settings, ob = settings.get_component_type(type(self))
             if ob:
-                self.verify(ob, context)
+                self.verify(ob, settings, context)

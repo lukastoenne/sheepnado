@@ -22,12 +22,13 @@ import bpy
 from bpy.types import PropertyGroup, Group, Operator
 from bpy.props import *
 
-from sheepnado import curve_guide, rig
+from sheepnado import curve_guide, deform_curve, rig
 
 _group_name = "SheepnadoGroup"
 _object_prefix = "Sheepnado."
 _components = {
     ("curve_guide", curve_guide.SheepnadoCurveGuide),
+    ("deform_curve", deform_curve.SheepnadoDeformCurve),
     ("rig", rig.SheepnadoRig),
 }
 
@@ -113,7 +114,11 @@ def verify_group_objects(context, group, add_missing, cleanup_action):
     
     # verify objects
     for c in settings.components:
-        c[1].verify(c[2], context)
+        c[1].verify(c[2], settings, context)
+
+    # link objects
+    for c in settings.components:
+        c[1].link(c[2], settings)
 
 def get_group(context):
     return bpy.data.groups.get(_group_name, None)

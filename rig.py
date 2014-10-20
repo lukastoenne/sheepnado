@@ -50,7 +50,7 @@ class SheepnadoRig(SheepnadoComponent, bpy.types.PropertyGroup):
     def draw(self, layout, context):
         layout.prop(self, "handles")
 
-    def verify(self, ob, context):
+    def verify(self, ob, settings, context):
         cur_act = context.scene.objects.active
         # set the armature as active and go to edit mode to add bones
         context.scene.objects.active = ob

@@ -25,30 +25,22 @@ from mathutils import *
 
 from sheepnado.component import *
 from sheepnado.curve_utils import *
+from sheepnado.rig import SheepnadoRig
 
-class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
+class SheepnadoDeformCurve(SheepnadoComponent, bpy.types.PropertyGroup):
     object_type = 'CURVE'
     curve_type = 'CURVE'
     
-    revolutions = FloatProperty(name="Revolutions", description="Number of revolutions of the curve guide",
-                                default=4, min=1.0, soft_min=1.0, soft_max=200.0,
-                                update=SheepnadoComponent.component_update)
-    resolution = IntProperty(name="Resolution", description="Number of points per curve guide revolution",
-                             default=4, min=1, soft_min=3, soft_max=32, options=set(),
-                             update=SheepnadoComponent.component_update)
-    
     def draw(self, layout, context):
-        layout.prop(self, "revolutions")
-        layout.prop(self, "resolution")
+        pass
 
-    def setup_points(self, spline, num_points, num_rev):
+    def setup_points(self, spline, num_points):
         dz = -1.0 / (num_points - 1)
-        dphi = 2*pi * num_rev / (num_points - 1)
         for k, pt in enumerate(spline.bezier_points):
             pt.handle_left_type = 'AUTO'
             pt.handle_right_type = 'AUTO'
             
-            pt.co = Vector((sin(dphi*k), cos(dphi*k), dz*k))
+            pt.co = Vector((0.0, 0.0, dz*k))
 
     def verify(self, ob, settings, context):
         curve = ob.data
@@ -56,8 +48,11 @@ class SheepnadoCurveGuide(SheepnadoComponent, bpy.types.PropertyGroup):
         # curve needs to be 3D
         curve.dimensions = '3D'
         
-        num_rev = self.revolutions
-        num_points = int(ceil(self.resolution * num_rev))
+        num_points = settings.rig.handles
         
         verify_curve_bezier_splines(curve, 1, num_points)
-        self.setup_points(curve.splines[0], num_points, num_rev)
+        self.setup_points(curve.splines[0], num_points)
+
+    def link(self, ob, settings):
+        rig = settings.get_component_type(SheepnadoRig)
+        
